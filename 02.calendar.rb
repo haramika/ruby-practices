@@ -38,6 +38,6 @@ end
 puts
 print "   " * first_date.wday
 (first_date..last_date).each do |date|
-  print date.day.rjust(3)
+  print date.day.to_s.rjust(3)
   puts if date.saturday?
 end
