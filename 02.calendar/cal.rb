@@ -16,7 +16,7 @@ target_year = params[:y].to_i
 target_year = today.year if target_year == 0
 
 target_month = params[:m].to_i
-  target_month = today.month if target_month == 0
+target_month = today.month if target_month == 0
 
 first_date = Date.new(target_year,target_month,1)
 last_date = Date.new(target_year,target_month,-1)
@@ -34,4 +34,6 @@ print "   " * first_date.wday
   print date.day.to_s.rjust(3)
   puts if date.saturday?
 end
+
+puts
 
