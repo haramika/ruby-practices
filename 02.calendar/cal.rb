@@ -25,13 +25,13 @@ puts "#{target_month}月 #{target_year}".center(20)
 
 WEEKDAYS = %w[日 月 火 水 木 金 土]
 WEEKDAYS.each do |w|
-  print w.rjust(2)
+  print w.ljust(2)
 end
 
 puts
 print "   " * first_date.wday
 (first_date..last_date).each do |date|
-  print date.day.to_s.rjust(3)
+  print date.strftime('%e').ljust(3)
   puts if date.saturday?
 end
 
