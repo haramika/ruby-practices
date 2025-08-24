@@ -11,9 +11,10 @@ frames = shots.each_slice(2).to_a
 
 total_point = frames.each_with_index.sum do |frame, i|
   frame.sum
-  frame.sum
   if frame[0] == 10 && i < 9
-    frames[i + 1].first == 10 ? frame.sum + frames[i + 1].sum + frames[i + 2].first : frame.sum + frames[i + 1].sum
+    frame = strike_point = frame.sum + frames[i + 1].sum
+    frame = strike_point + frames[i + 2].first if frames[i + 1].first == 10
+    frame
   elsif frame.sum == 10 && i < 9
     frame.sum + frames[i + 1].first
   else
