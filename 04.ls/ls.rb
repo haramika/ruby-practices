@@ -4,6 +4,13 @@
 
 current_directories = Dir.glob("*")
 
+def main(directory_name, multiple)
+  remainder_number = (0..100).to_a
+  remainder_number.each do |remainder|
+    print_directory(directory_name, multiple, remainder) if remainder < multiple
+  end
+end
+
 def print_directory(directory_name, multiple, remainder)
   directory_name.map.with_index do |file, idx|
     print file.ljust(20) if idx % multiple == remainder
@@ -11,6 +18,4 @@ def print_directory(directory_name, multiple, remainder)
   puts
 end
 
-print_directory(current_directories, 3, 0)
-print_directory(current_directories, 3, 1)
-print_directory(current_directories, 3, 2)
+main(current_directories, 3)
