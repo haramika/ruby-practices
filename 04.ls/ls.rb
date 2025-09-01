@@ -5,8 +5,7 @@
 current_directories = Dir.glob("*")
 
 def main(directory_name, multiple)
-  remainder_number = (0..100).to_a
-  remainder_number.each do |remainder|
+  (0..100).to_a.each do |remainder|
     print_directory(directory_name, multiple, remainder) if remainder < multiple
   end
 end
