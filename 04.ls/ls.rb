@@ -3,7 +3,7 @@
 # frozen_string_literal: true
 
 current_directories = Dir.glob('*')
-number_of_column = (current_directories.size / 3.0).ceil
+number_of_column = current_directories.size.ceildiv(3)
 
 def main(directory_names, max_column)
   (0..(max_column - 1)).to_a.each do |row|
