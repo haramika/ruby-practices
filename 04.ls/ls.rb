@@ -10,7 +10,7 @@ def main(directory_names, max_column)
 end
 
 def print_directory_line(directory_names, max_column, row)
-  print directory_names[(row..).step(max_column)].join("  ")
+  print directory_names[(row..).step(max_column)].join('  ')
   puts
 end
 
