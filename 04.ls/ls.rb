@@ -10,9 +10,9 @@ def main(directory_names, max_column)
 end
 
 def print_directory_line(directory_names, max_column, row)
-  selected_files = directory_names.values_at(row, row + max_column, row + max_column * 2).compact
+  selected_files =  directory_names[(row..).step(max_column)].to_a
   selected_files.each do |file|
-    print file.ljust(20).insert(20, ' ')
+    print file.ljust(20)
   end
   puts
 end
