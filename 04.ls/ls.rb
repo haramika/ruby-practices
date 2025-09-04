@@ -10,10 +10,7 @@ def main(directory_names, max_column)
 end
 
 def print_directory_line(directory_names, max_column, row)
-  selected_files =  directory_names[(row..).step(max_column)].to_a
-  selected_files.each do |file|
-    print file.ljust(20)
-  end
+  print directory_names[(row..).step(max_column)].join("  ")
   puts
 end
 
