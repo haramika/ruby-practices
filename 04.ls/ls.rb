@@ -10,7 +10,8 @@ def main(directory_names, max_column)
 end
 
 def print_directory_line(directory_names, max_column, row)
-  print directory_names[(row..).step(max_column)].join('  ')
+  selected_files = directory_names[(row..).step(max_column)]
+  print selected_files.map { |file| file.ljust(20) }.join(' ')
   puts
 end
 
