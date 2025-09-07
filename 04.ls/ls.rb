@@ -2,7 +2,13 @@
 
 # frozen_string_literal: true
 
+require 'optparse'
+opt = OptionParser.new
+
 current_directories = Dir.glob('*')
+opt.on('-a'){ current_directories = Dir.glob('*', File::FNM_DOTMATCH) }
+opt.parse(ARGV)
+
 number_of_row = current_directories.size.ceildiv(3)
 
 def main(directory_names, max_column)
