@@ -5,12 +5,8 @@
 require 'optparse'
 opt = OptionParser.new
 
-params = {}
-opt.on('-a') { params[:a] = true }
-opt.parse!(ARGV)
-
-option = params[:a] ? File::FNM_DOTMATCH : 0
-current_directories = Dir.glob('*', option)
+current_directories = Dir.glob(`*`)
+opt.on('-r') { current_directories = Dir.glob('*').reberse }
 
 number_of_row = current_directories.size.ceildiv(3)
 
