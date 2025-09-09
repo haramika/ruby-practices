@@ -3,10 +3,9 @@
 # frozen_string_literal: true
 
 require 'optparse'
-opt = OptionParser.new
 
-current_directories = Dir.glob(`*`)
-opt.on('-r') { current_directories = Dir.glob('*').reberse }
+options = ARGV.getopts('r')
+current_directories = options['r'] ? Dir.glob('*').reverse : Dir.glob('*')
 
 number_of_row = current_directories.size.ceildiv(3)
 
