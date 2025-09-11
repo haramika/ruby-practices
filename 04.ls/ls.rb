@@ -3,14 +3,10 @@
 # frozen_string_literal: true
 
 require 'optparse'
-opt = OptionParser.new
 
-params = {}
-opt.on('-a') { params[:a] = true }
-opt.parse!(ARGV)
-
-option = params[:a] ? File::FNM_DOTMATCH : 0
-current_directories = Dir.glob('*', option)
+options = ARGV.getopts('r')
+current_directories = Dir.glob('*')
+selected_directories = options['r'] ? current_directories.reverse : current_directories
 
 number_of_row = current_directories.size.ceildiv(3)
 
@@ -24,4 +20,4 @@ def print_directory_line(directory_names, max_column, row)
   puts
 end
 
-main(current_directories, number_of_row)
+main(selected_directories, number_of_row)
