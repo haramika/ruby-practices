@@ -11,11 +11,8 @@ current_directories = Dir.glob('*')
 number_of_row = current_directories.size.ceildiv(3)
 
 def put_total_block(directory_names)
-  total_blocks = directory_names.map do |file|
-    File::Stat.new(file).blocks
-  end
   print 'total '
-  puts total_blocks.sum
+  puts directory_names.sum { |file| File::Stat.new(file).blocks}
 end
 
 def put_file_detail(directory_names)
@@ -58,23 +55,20 @@ def put_file_detail(directory_names)
       fs.mtime.day.to_s.rjust(2),
       fs.mtime.strftime('%H:%M'),
       file
-    ]
+    ].join(' ')
 
-    ls_contents.each do |content|
-      print ' '
-      print content
-    end
+    print ls_contents
 
     puts
   end
 end
 
-def ls_l(directory_names)
+def put_block_and_detail(directory_names)
   put_total_block(directory_names)
   put_file_detail(directory_names)
 end
 
-def main(directory_names, max_column)
+def put_filename(directory_names, max_column)
   max_column.times { |row| print print_directory_line(directory_names, max_column, row) }
 end
 
@@ -84,4 +78,4 @@ def print_directory_line(directory_names, max_column, row)
   puts
 end
 
-options['l'] ? ls_l(current_directories) : main(current_directories, number_of_row)
+options['l'] ? put_block_and_detail(current_directories) : put_filename(current_directories, number_of_row)
