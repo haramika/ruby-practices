@@ -10,48 +10,32 @@ current_directories = Dir.glob('*')
 
 number_of_row = current_directories.size.ceildiv(3)
 
-def file_type
-  { '-' => 'file',
-    'd' => 'directory',
-    'l' => 'link' }
-end
-
-def put_permission
-  { '---' => '0',
-    '--x' => '1',
-    '-w-' => '2',
-    '-wx' => '3',
-    'r--' => '4',
-    'r-x' => '5',
-    'rw-' => '6',
-    'rwx' => '7' }
-end
-
 def put_total_block(directory_names)
   print 'total '
   puts(directory_names.sum { |file| File::Stat.new(file).blocks })
 end
 
 def put_detail(directory_names)
+  file_types = { '-' => 'file', 'd' => 'directory', 'l' => 'link' }
+  permissions = { '---' => '0', '--x' => '1', '-w-' => '2', '-wx' => '3', 'r--' => '4', 'r-x' => '5', 'rw-' => '6', 'rwx' => '7' }
+
   directory_names.each do |file|
     fs = File::Stat.new(file)
 
-    file_type.select { |k, v| print k if fs.ftype == v }
+    print file_types.key(fs.ftype)
 
     [3, 4, 5].each do |i|
-      put_permission.select { |k, v| print k if fs.mode.to_s(8).rjust(6, '0').slice(i) == v }
+      print permissions.key(fs.mode.to_s(8).rjust(6, '0').slice(i))
     end
 
-    ls_contents = [
-      fs.nlink.to_s.rjust(3),
-      Etc.getpwuid(fs.uid).name,
-      Etc.getgrgid(fs.gid).name.rjust(6),
-      fs.size.to_s.rjust(5),
-      fs.mtime.month.to_s.rjust(2),
-      fs.mtime.day.to_s.rjust(2),
-      fs.mtime.strftime('%H:%M'),
-      file
-    ].join(' ')
+    ls_contents = [fs.nlink.to_s.rjust(3),
+                   Etc.getpwuid(fs.uid).name,
+                   Etc.getgrgid(fs.gid).name.rjust(6),
+                   fs.size.to_s.rjust(5),
+                   fs.mtime.month.to_s.rjust(2),
+                   fs.mtime.day.to_s.rjust(2),
+                   fs.mtime.strftime('%H:%M'),
+                   file].join(' ')
 
     print ls_contents
     puts
@@ -63,7 +47,7 @@ def put_file_detail(directory_names)
   put_detail(directory_names)
 end
 
-def put_file_name(directory_names, max_column)
+def put_file_name_only(directory_names, max_column)
   max_column.times { |row| print print_directory_line(directory_names, max_column, row) }
 end
 
@@ -73,4 +57,4 @@ def print_directory_line(directory_names, max_column, row)
   puts
 end
 
-options['l'] ? put_file_detail(current_directories) : put_file_name(current_directories, number_of_row)
+options['l'] ? put_file_detail(current_directories) : put_file_name_only(current_directories, number_of_row)
