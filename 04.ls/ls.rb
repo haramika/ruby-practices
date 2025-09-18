@@ -16,16 +16,15 @@ def put_total_block(directory_names)
 end
 
 def put_detail(directory_names)
-  file_types = { '-' => 'file', 'd' => 'directory', 'l' => 'link' }
-  permissions = { '---' => '0', '--x' => '1', '-w-' => '2', '-wx' => '3', 'r--' => '4', 'r-x' => '5', 'rw-' => '6', 'rwx' => '7' }
-
+  file_types = { 'file' => '-', 'directory' => 'd', 'link' => 'l' }
+  permissions = { '0' => '---', '1' => '--x', '2' => '-w-', '3' => '-wx', '4' => 'r--', '5' => 'r-x', '6' => 'rw-', '7' => 'rwx' }
   directory_names.each do |file|
     fs = File::Stat.new(file)
 
-    print file_types.key(fs.ftype)
+    print file_types[fs.ftype]
 
     [3, 4, 5].each do |i|
-      print permissions.key(fs.mode.to_s(8).rjust(6, '0').slice(i))
+      print permissions[fs.mode.to_s(8).rjust(6, '0').slice(i)]
     end
 
     ls_contents = [fs.nlink.to_s.rjust(3),
