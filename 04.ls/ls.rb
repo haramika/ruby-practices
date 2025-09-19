@@ -5,8 +5,9 @@
 require 'optparse'
 require 'etc'
 
-options = ARGV.getopts('l')
-current_directories = Dir.glob('*')
+options = ARGV.getopts('a', 'r', 'l')
+current_directories = Dir.glob('*', options['a'] ? File::FNM_DOTMATCH : 0)
+selected_directories = options['r'] ? current_directories.reverse : current_directories
 
 number_of_row = current_directories.size.ceildiv(3)
 
@@ -56,4 +57,4 @@ def print_directory_line(directory_names, max_column, row)
   puts
 end
 
-options['l'] ? put_file_detail(current_directories) : put_file_name_only(current_directories, number_of_row)
+options['l'] ? put_file_detail(selected_directories) : put_file_name_only(selected_directories, number_of_row)
