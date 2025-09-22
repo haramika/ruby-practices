@@ -8,7 +8,7 @@ OPTIONS = ARGV.getopts('l', 'w', 'c')
 
 TOTAL_LINE = ARGV.sum { |file| File.readlines(file).length }.to_s.rjust(8)
 TOTAL_WORD = ARGV.sum { |file| File.read(file).split.size }.to_s.rjust(7)
-TOTAL_BYTE = ARGV.sum { |file| File.size(file) }.to_s.rjust(8)
+TOTAL_BYTE = ARGV.sum { |file| File.size(file) }.to_s.rjust(7)
 TOTAL_CONTENTS = [TOTAL_LINE, TOTAL_WORD, TOTAL_BYTE, 'total'].join(' ')
 TOTAL_OPTIONS = if OPTIONS['l'] | OPTIONS['w'] | OPTIONS['c']
                   [OPTIONS['l'] ? TOTAL_LINE : '',
@@ -27,7 +27,7 @@ def put_file_content
   ARGV.size.times do |i|
     file_line = File.readlines(ARGV[i]).length.to_s.rjust(8)
     file_word = File.read(ARGV[i]).split.size.to_s.rjust(7)
-    file_byte = File.size(ARGV[i]).to_s.rjust(8)
+    file_byte = File.size(ARGV[i]).to_s.rjust(7)
     all_contents = [file_line, file_word, file_byte, ARGV[i]].join(' ')
 
     selected_contents = if OPTIONS['l'] | OPTIONS['w'] | OPTIONS['c']
