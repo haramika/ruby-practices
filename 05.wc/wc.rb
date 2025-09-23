@@ -42,7 +42,9 @@ def put_file_content
     puts
   end
 
-  print TOTAL_OPTIONS if ARGV.size != 1
+  return if ARGV.size == 1
+
+  print TOTAL_OPTIONS
   puts
 end
 
