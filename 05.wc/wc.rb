@@ -7,17 +7,15 @@ require 'optparse'
 OPTIONS = ARGV.getopts('l', 'w', 'c')
 
 TOTAL_LINE = ARGV.sum { |file| File.readlines(file).length }.to_s.rjust(8)
-TOTAL_WORD = ARGV.sum { |file| File.read(file).split.size }.to_s.rjust(7)
-TOTAL_BYTE = ARGV.sum { |file| File.size(file) }.to_s.rjust(7)
-TOTAL_CONTENTS = [TOTAL_LINE, TOTAL_WORD, TOTAL_BYTE, 'total'].join(' ')
-TOTAL_OPTIONS = if OPTIONS['l'] | OPTIONS['w'] | OPTIONS['c']
-                  [OPTIONS['l'] ? TOTAL_LINE : '',
-                   OPTIONS['w'] ? TOTAL_WORD : '',
-                   OPTIONS['c'] ? TOTAL_BYTE : '',
-                   'total'].join(' ')
-                else
-                  TOTAL_CONTENTS
-                end
+TOTAL_WORD = ARGV.sum { |file| File.read(file).split.size }.to_s.rjust(8)
+TOTAL_BYTE = ARGV.sum { |file| File.size(file) }.to_s.rjust(8)
+TOTAL_CONTENTS = [TOTAL_LINE, TOTAL_WORD, TOTAL_BYTE, ' total'].join
+
+TOTAL_OPTIONS = []
+TOTAL_OPTIONS.push(TOTAL_LINE) if OPTIONS['l']
+TOTAL_OPTIONS.push(TOTAL_WORD) if OPTIONS['w']
+TOTAL_OPTIONS.push(TOTAL_BYTE) if OPTIONS['c']
+TOTAL_OPTIONS.push(' total')
 
 def main
   ARGV.empty? ? put_standard_input : put_file_content
@@ -26,40 +24,40 @@ end
 def put_file_content
   ARGV.size.times do |i|
     file_line = File.readlines(ARGV[i]).length.to_s.rjust(8)
-    file_word = File.read(ARGV[i]).split.size.to_s.rjust(7)
-    file_byte = File.size(ARGV[i]).to_s.rjust(7)
-    all_contents = [file_line, file_word, file_byte, ARGV[i]].join(' ')
+    file_word = File.read(ARGV[i]).split.size.to_s.rjust(8)
+    file_byte = File.size(ARGV[i]).to_s.rjust(8)
+    all_contents = [file_line, file_word, file_byte].join
 
-    selected_contents = if OPTIONS['l'] | OPTIONS['w'] | OPTIONS['c']
-                          [OPTIONS['l'] ? file_line : '',
-                           OPTIONS['w'] ? file_word : '',
-                           OPTIONS['c'] ? file_byte : '',
-                           ARGV[i]].join(' ')
-                        else
-                          all_contents
-                        end
-    print selected_contents
+    option_contents = []
+    option_contents.push(file_line) if OPTIONS['l']
+    option_contents.push(file_word) if OPTIONS['w']
+    option_contents.push(file_byte) if OPTIONS['c']
+
+    print OPTIONS['l'] | OPTIONS['w'] | OPTIONS['c'] ? option_contents.join : all_contents
+    print ' '
+    print ARGV[i]
     puts
   end
 
   return if ARGV.size == 1
 
-  print TOTAL_OPTIONS
+  print OPTIONS['l'] | OPTIONS['w'] | OPTIONS['c'] ? TOTAL_OPTIONS.join : TOTAL_CONTENTS
   puts
 end
 
 def put_standard_input
   standard_inputs = readlines.map(&:chomp)
   standard_input_line = standard_inputs.length.to_s.rjust(8)
-  standard_input_word = standard_inputs.map { |file| file.split(' ').size }.sum.to_s.rjust(7)
-  standard_input_byte = standard_inputs.join.bytesize.to_s.rjust(7)
-  all_standard_inputs = [standard_input_line, standard_input_word, standard_input_byte].join(' ')
+  standard_input_word = standard_inputs.map { |file| file.split(' ').size }.sum.to_s.rjust(8)
+  standard_input_byte = standard_inputs.join.bytesize.to_s.rjust(8)
+  all_standard_inputs = [standard_input_line, standard_input_word, standard_input_byte].join
 
-  standard_input_options = [OPTIONS['l'] ? standard_input_line : '',
-                            OPTIONS['w'] ? standard_input_word : '',
-                            OPTIONS['c'] ? standard_input_byte : ''].join(' ')
+  standard_input_options = []
+  standard_input_options.push(standard_input_line) if OPTIONS['l']
+  standard_input_options.push(standard_input_word) if OPTIONS['w']
+  standard_input_options.push(standard_input_byte) if OPTIONS['c']
 
-  print OPTIONS['l'] | OPTIONS['w'] | OPTIONS['c'] ? standard_input_options : all_standard_inputs
+  print OPTIONS['l'] | OPTIONS['w'] | OPTIONS['c'] ? standard_input_options.join : all_standard_inputs
   puts
 end
 
