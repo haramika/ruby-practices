@@ -11,14 +11,13 @@ TOTAL_WORD = ARGV.sum { |file| File.read(file).split.size }.to_s.rjust(8)
 TOTAL_BYTE = ARGV.sum { |file| File.size(file) }.to_s.rjust(8)
 TOTAL_CONTENTS = [TOTAL_LINE, TOTAL_WORD, TOTAL_BYTE, ' total'].join
 
-TOTAL_OPTIONS = []
-TOTAL_OPTIONS.push(TOTAL_LINE) if OPTIONS['l']
-TOTAL_OPTIONS.push(TOTAL_WORD) if OPTIONS['w']
-TOTAL_OPTIONS.push(TOTAL_BYTE) if OPTIONS['c']
-TOTAL_OPTIONS.push(' total')
-
 def main
-  ARGV.empty? ? put_standard_input : put_file_content
+  if ARGV.empty?
+    put_standard_input
+  else
+    put_file_content
+    put_total
+  end
 end
 
 def put_file_content
@@ -34,14 +33,21 @@ def put_file_content
     option_contents.push(file_byte) if OPTIONS['c']
 
     print OPTIONS['l'] | OPTIONS['w'] | OPTIONS['c'] ? option_contents.join : all_contents
-    print ' '
-    print ARGV[i]
+    print [' ', ARGV[i]].join
     puts
   end
+end
+
+def put_total
+  total_options = []
+  total_options.push(TOTAL_LINE) if OPTIONS['l']
+  total_options.push(TOTAL_WORD) if OPTIONS['w']
+  total_options.push(TOTAL_BYTE) if OPTIONS['c']
+  total_options.push(' total')
 
   return if ARGV.size == 1
 
-  print OPTIONS['l'] | OPTIONS['w'] | OPTIONS['c'] ? TOTAL_OPTIONS.join : TOTAL_CONTENTS
+  print OPTIONS['l'] | OPTIONS['w'] | OPTIONS['c'] ? total_options.join : TOTAL_CONTENTS
   puts
 end
 
