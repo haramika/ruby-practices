@@ -4,47 +4,53 @@
 
 require 'optparse'
 
-OPTIONS = ARGV.getopts('l', 'w', 'c')
+options = ARGV.getopts('l', 'w', 'c')
 
-def main
-  put_content(ARGV)
-  put_total(ARGV) if ARGV.size >= 2
+def main(arguments, options)
+  put_content(arguments, options)
+  put_total(arguments, options) if arguments.size >= 2
 end
 
-def select_file(argv)
-  argv.empty? ? [readlines] : argv.map { |file| File.readlines(file) }
+def select_file(arguments)
+  arguments.empty? ? [readlines] : arguments.map { |file| File.readlines(file) }
 end
 
-def put_content(argv)
-  select_file(ARGV).map.with_index do |file, i|
-    file_line = file.length
-    file_word = file.map { |file| file.split.size }.sum
-    file_byte = file.join.bytesize
+def make_content(arguments, options)
+  file_lines = []
+  file_words = []
+  file_bytes = []
 
-    contents = OPTIONS['l'] | OPTIONS['w'] | OPTIONS['c'] ? [] : [file_line, file_word, file_byte]
+  select_file(arguments).map do |file|
+    file_lines.push(file.length)
+    file_words.push(file.map { |file| file.split.size }.sum)
+    file_bytes.push(file.join.bytesize)
+  end
 
-    contents.push(file_line) if OPTIONS['l']
-    contents.push(file_word) if OPTIONS['w']
-    contents.push(file_byte) if OPTIONS['c']
-    contents.each { |content| print content.to_s.rjust(8) }
-    print [' ', argv[i]].join
+  option_contents = []
+  option_contents.push(file_lines) if options['l']
+  option_contents.push(file_words) if options['w']
+  option_contents.push(file_bytes) if options['c']
+
+  options['l'] | options['w'] | options['c'] ? option_contents : [file_lines, file_words, file_bytes]
+end
+
+def put_content(arguments, options)
+  if arguments.empty?
+    make_content(arguments, options).each { |content| content.each { |content| print content.to_s.rjust(8) } }
     puts
+  else
+    arguments.size.times do |i|
+      make_content(arguments, options).each { |content| print content[i].to_s.rjust(8) }
+      print [' ', arguments[i]].join
+      puts
+    end
   end
 end
 
-def put_total(argv)
-  total_line = argv.sum { |file| File.readlines(file).length }
-  total_word = argv.sum { |file| File.read(file).split.size }
-  total_byte = argv.sum { |file| File.size(file) }
-
-  total_contents = OPTIONS['l'] | OPTIONS['w'] | OPTIONS['c'] ? [] : [total_line, total_word, total_byte]
-
-  total_contents.push(total_line) if OPTIONS['l']
-  total_contents.push(total_word) if OPTIONS['w']
-  total_contents.push(total_byte) if OPTIONS['c']
-  total_contents.each { |content| print content.to_s.rjust(8) }
+def put_total(arguments, options)
+  make_content(arguments, options).each { |n| print n.sum.to_s.rjust(8) }
   print ' total'
   puts
 end
 
-main
+main(ARGV, options)
