@@ -24,7 +24,7 @@ def make_content(arguments)
 end
 
 def select_content(arguments, options)
-  if options['l'] | options['w'] | options['c']
+  if options.values.any?
     make_content(arguments).each do |content|
       content.delete(:line) unless options['l']
       content.delete(:word) unless options['w']
@@ -35,23 +35,28 @@ def select_content(arguments, options)
   end
 end
 
+def print_content(data)
+  data.each_value { |value| print value.to_s.rjust(8) }
+end
+
 def put_content(arguments, options)
   select_content(arguments, options).each.with_index do |content, i|
-    content.each_value { |value| print value.to_s.rjust(8) }
-    print [' ', arguments[i]].join
-    puts
+    print_content(content)
+    puts " #{arguments[i]}"
+  end
+end
+
+def make_total(arguments, options)
+  select_content(arguments, options).inject do |hash1, hash2|
+    hash1.merge(hash2) do |_key, oldval, newval|
+      oldval + newval
+    end
   end
 end
 
 def put_total(arguments, options)
-  merge_data = select_content(arguments, options).inject do |v1, v2|
-    v1.merge(v2) do |_key, oldval, newval|
-      oldval + newval
-    end
-  end
-  merge_data.each_value { |value| print value.to_s.rjust(8) }
-  print ' total'
-  puts
+  print_content(make_total(arguments, options))
+  puts ' total'
 end
 
 main(ARGV, options)
