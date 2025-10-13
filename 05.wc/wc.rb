@@ -7,8 +7,11 @@ require 'optparse'
 options = ARGV.getopts('l', 'w', 'c')
 
 def main(arguments, options)
-  put_content(arguments, options)
-  put_total(arguments, options) if arguments.size >= 2
+  if arguments.size <= 1
+    put_content(arguments, options)
+  else
+    put_content_total(arguments, options)
+  end
 end
 
 def select_file(arguments)
@@ -24,38 +27,36 @@ def make_content(arguments)
 end
 
 def select_content(arguments, options)
-  if options.values.any?
-    make_content(arguments).each do |content|
-      content.delete(:line) unless options['l']
-      content.delete(:word) unless options['w']
-      content.delete(:byte) unless options['c']
-    end
-  else
-    make_content(arguments)
+  make_content(arguments).each do |content|
+    next unless options.values.any?
+
+    content.delete(:line) unless options['l']
+    content.delete(:word) unless options['w']
+    content.delete(:byte) unless options['c']
   end
 end
 
-def print_content(data)
+def print_value(data)
   data.each_value { |value| print value.to_s.rjust(8) }
 end
 
 def put_content(arguments, options)
   select_content(arguments, options).each.with_index do |content, i|
-    print_content(content)
+    print_value(content)
     puts " #{arguments[i]}"
   end
 end
 
 def make_total(arguments, options)
-  select_content(arguments, options).inject do |hash1, hash2|
+  put_content(arguments, options).inject do |hash1, hash2|
     hash1.merge(hash2) do |_key, oldval, newval|
       oldval + newval
     end
   end
 end
 
-def put_total(arguments, options)
-  print_content(make_total(arguments, options))
+def put_content_total(arguments, options)
+  print_value(make_total(arguments, options))
   puts ' total'
 end
 
