@@ -10,7 +10,7 @@ def main(arguments, options)
   if arguments.size <= 1
     put_content(arguments, options)
   else
-    put_content_total(arguments, options)
+    put_content_with_total(arguments, options)
   end
 end
 
@@ -28,7 +28,7 @@ end
 
 def select_content(arguments, options)
   make_content(arguments).each do |content|
-    next unless options.values.any?
+    next if options.values.none?
 
     content.delete(:line) unless options['l']
     content.delete(:word) unless options['w']
@@ -48,14 +48,14 @@ def put_content(arguments, options)
 end
 
 def make_total(arguments, options)
-  put_content(arguments, options).inject do |hash1, hash2|
-    hash1.merge(hash2) do |_key, oldval, newval|
+  put_content(arguments, options).inject do |total, partial|
+    total.merge(partial) do |_key, oldval, newval|
       oldval + newval
     end
   end
 end
 
-def put_content_total(arguments, options)
+def put_content_with_total(arguments, options)
   print_value(make_total(arguments, options))
   puts ' total'
 end
